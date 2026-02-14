@@ -128,7 +128,7 @@ For each competitor, evaluate:
 Save all output files to:
 
 ```
-~/Downloads/competitive-intel/{company-name}/
+~/Claude/skills/competitive-intel/{company-name}/
 ```
 
 - Use a URL-safe, lowercase version of the company name for the directory (e.g., `acme-corp`, `stripe`, `notion`)
