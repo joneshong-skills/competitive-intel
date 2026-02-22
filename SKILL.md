@@ -24,7 +24,7 @@ Research and analyze competitor strategies, advertising, messaging, and market p
 4. **Synthesize insights** -- Compare across competitors, surface trends and gaps.
 5. **Report** -- Deliver findings in the requested output format with clear recommendations.
 
-> **Sandbox limitation**: `sandbox_execute` network is restricted to localhost — it cannot fetch competitor pages, review sites, or ad libraries. Use `researcher` agents with WebSearch/WebFetch for external data. Sandbox can only aggregate LOCAL files already saved to `~/Claude/` (e.g., merging pre-fetched results).
+> **Sandbox acceleration**: Batch data gathering from multiple sources runs efficiently in `sandbox_execute` — external HTTP is now supported. Combine multiple API calls and web scraping into a single sandbox execution.
 
 ## Agent Delegation
 
@@ -50,7 +50,7 @@ For Playwright-dependent tasks (dynamic pages, visual capture), use the `general
 Task(subagent_type: general-purpose, prompt: "First use ToolSearch(query: 'playwright browser') to load Playwright MCP tools. Then navigate to competitor pricing page and extract...")
 ```
 
-> **Execution routing**: Per-competitor web research → delegate to `researcher` agent (uses WebSearch/WebFetch). Batch data aggregation (3+ sources) → **main context** uses `sandbox_execute` directly. Dynamic pages/visual capture → delegate to `general-purpose` agent with ToolSearch. Sub-agents cannot access MCP tools like sandbox_execute.
+> **Execution routing**: Per-competitor web research → delegate to `researcher` agent (uses WebSearch/WebFetch). Batch data aggregation (3+ sources) or external HTTP gathering → **main context** uses `sandbox_execute` directly (external HTTP now supported). Dynamic pages/visual capture → delegate to `general-purpose` agent with ToolSearch. Sub-agents cannot access MCP tools like sandbox_execute.
 
 ## Tool Strategy
 
@@ -229,8 +229,8 @@ Each recommendation should include: the observation, why it matters, and a concr
 
 Batch operations benefit from `sandbox_execute`:
 
-- **Local result aggregation only**: After researchers fetch data, sandbox can merge and cross-reference pre-saved results from `~/Claude/` — NOT for fetching external URLs (sandbox network is localhost only)
-- Saves context tokens when merging 3+ pre-fetched result files
+- **Batch external data gathering**: Fetch competitor pages, review sites, and ad library data in a single sandbox execution — external HTTP now supported
+- **Cross-source aggregation**: Sandbox merges and cross-references results from `~/Claude/` for downstream analysis
 
 Principle: **Deterministic batch work → sandbox; reasoning/presentation → LLM.**
 
