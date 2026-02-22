@@ -8,8 +8,8 @@ description: >-
   "競爭分析", "競品研究", "市場定位分析", "廣告分析", "競爭對手",
   mentions competitive intelligence,
   or discusses competitor strategies, market positioning, ad analysis, or competitive landscape research.
-version: 0.2.0
-tools: Read, Write, Glob, Bash, WebSearch, WebFetch
+version: 0.3.0
+tools: Read, Write, Glob, Bash, WebSearch, WebFetch, sandbox_execute
 ---
 
 # Competitive Intelligence
@@ -23,6 +23,32 @@ Research and analyze competitor strategies, advertising, messaging, and market p
 3. **Analyze patterns** -- Apply the analysis framework below to each competitor.
 4. **Synthesize insights** -- Compare across competitors, surface trends and gaps.
 5. **Report** -- Deliver findings in the requested output format with clear recommendations.
+
+> **Sandbox acceleration**: When aggregating data from 3+ sources (multiple competitor pages, review sites, ad libraries), batch all fetch-and-extract calls into a single `sandbox_execute` call to save context tokens before synthesis.
+
+## Agent Delegation
+
+This skill delegates research sub-tasks to the `researcher` agent for context isolation
+and token efficiency. The main context handles scope definition, synthesis, and reporting.
+
+### Single-agent pattern
+```
+Main context (scope + synthesis)
+  └─ Task(subagent_type: researcher) × N research legs
+       └─ Each leg: one competitor or one research angle
+```
+
+When gathering data for multiple competitors, spawn **parallel researcher agents**
+(one per competitor) to maximize speed and isolate each research context:
+```
+Task(subagent_type: researcher, prompt: "Research competitor A: ads, pricing, messaging...")
+Task(subagent_type: researcher, prompt: "Research competitor B: ads, pricing, messaging...")
+```
+
+For Playwright-dependent tasks (dynamic pages, visual capture), use the `browser` agent:
+```
+Task(subagent_type: browser, prompt: "Navigate to competitor pricing page and extract...")
+```
 
 ## Tool Strategy
 
@@ -196,6 +222,15 @@ Each recommendation should include: the observation, why it matters, and a concr
 - Respect intellectual property -- reference and attribute, do not reproduce
 - Clearly label all findings as competitive research, not endorsed or verified claims
 - When in doubt about a data source's accessibility, ask the user before proceeding
+
+## Sandbox Optimization
+
+Batch operations benefit from `sandbox_execute`:
+
+- **Batch data aggregation**: Process multiple competitor pages, review sites, or ad sources in one sandbox call, returning structured summaries instead of raw HTML/content
+- Saves context tokens when handling 3+ data sources simultaneously
+
+Principle: **Deterministic batch work → sandbox; reasoning/presentation → LLM.**
 
 ## Continuous Improvement
 
