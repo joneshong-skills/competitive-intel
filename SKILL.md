@@ -24,7 +24,7 @@ Research and analyze competitor strategies, advertising, messaging, and market p
 4. **Synthesize insights** -- Compare across competitors, surface trends and gaps.
 5. **Report** -- Deliver findings in the requested output format with clear recommendations.
 
-> **Sandbox acceleration**: When aggregating data from 3+ sources (multiple competitor pages, review sites, ad libraries), batch all fetch-and-extract calls into a single `sandbox_execute` call to save context tokens before synthesis.
+> **Sandbox limitation**: `sandbox_execute` network is restricted to localhost — it cannot fetch competitor pages, review sites, or ad libraries. Use `researcher` agents with WebSearch/WebFetch for external data. Sandbox can only aggregate LOCAL files already saved to `~/Claude/` (e.g., merging pre-fetched results).
 
 ## Agent Delegation
 
@@ -45,10 +45,12 @@ Task(subagent_type: researcher, prompt: "Research competitor A: ads, pricing, me
 Task(subagent_type: researcher, prompt: "Research competitor B: ads, pricing, messaging...")
 ```
 
-For Playwright-dependent tasks (dynamic pages, visual capture), use the `browser` agent:
+For Playwright-dependent tasks (dynamic pages, visual capture), use the `general-purpose` agent (NOT `browser` — it lacks ToolSearch and cannot load deferred Playwright MCP tools):
 ```
-Task(subagent_type: browser, prompt: "Navigate to competitor pricing page and extract...")
+Task(subagent_type: general-purpose, prompt: "First use ToolSearch(query: 'playwright browser') to load Playwright MCP tools. Then navigate to competitor pricing page and extract...")
 ```
+
+> **Execution routing**: Per-competitor web research → delegate to `researcher` agent (uses WebSearch/WebFetch). Batch data aggregation (3+ sources) → **main context** uses `sandbox_execute` directly. Dynamic pages/visual capture → delegate to `general-purpose` agent with ToolSearch. Sub-agents cannot access MCP tools like sandbox_execute.
 
 ## Tool Strategy
 
@@ -227,10 +229,15 @@ Each recommendation should include: the observation, why it matters, and a concr
 
 Batch operations benefit from `sandbox_execute`:
 
-- **Batch data aggregation**: Process multiple competitor pages, review sites, or ad sources in one sandbox call, returning structured summaries instead of raw HTML/content
-- Saves context tokens when handling 3+ data sources simultaneously
+- **Local result aggregation only**: After researchers fetch data, sandbox can merge and cross-reference pre-saved results from `~/Claude/` — NOT for fetching external URLs (sandbox network is localhost only)
+- Saves context tokens when merging 3+ pre-fetched result files
 
 Principle: **Deterministic batch work → sandbox; reasoning/presentation → LLM.**
+
+
+## Integration
+
+- **meeting-insights** — Competitive context for meeting preparation and analysis
 
 ## Continuous Improvement
 
