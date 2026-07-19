@@ -1,15 +1,9 @@
 ---
 name: competitive-intel
-description: >-
-  This skill should be used when the user asks to "analyze competitors", "competitive research",
-  "extract competitor ads", "compare competitors", "market positioning analysis",
-  "competitive landscape", "ad analysis", "competitor strategies",
-  "competitor messaging", "competitor positioning",
-  "競爭分析", "競品研究", "市場定位分析", "廣告分析", "競爭對手",
-  mentions competitive intelligence,
-  or discusses competitor strategies, market positioning, ad analysis, or competitive landscape research.
+description: "competitive, intel, competitors, analyze, research, extract, competitor"
 version: 0.3.0
 tools: Read, Write, Glob, Bash, WebSearch, WebFetch, sandbox_execute
+disable-model-invocation: true
 ---
 
 # Competitive Intelligence
@@ -156,7 +150,7 @@ For each competitor, evaluate:
 Save all output files to:
 
 ```
-~/Claude/skills/competitive-intel/{company-name}/
+~/workshop/outputs/competitive-intel/{company-name}/
 ```
 
 - Use a URL-safe, lowercase version of the company name for the directory (e.g., `acme-corp`, `stripe`, `notion`)
@@ -230,7 +224,7 @@ Each recommendation should include: the observation, why it matters, and a concr
 Batch operations benefit from `sandbox_execute`:
 
 - **Batch external data gathering**: Fetch competitor pages, review sites, and ad library data in a single sandbox execution — external HTTP now supported
-- **Cross-source aggregation**: Sandbox merges and cross-references results from `~/Claude/` for downstream analysis
+- **Cross-source aggregation**: Sandbox merges and cross-references results from `~/workshop/outputs/` for downstream analysis
 
 Principle: **Deterministic batch work → sandbox; reasoning/presentation → LLM.**
 
