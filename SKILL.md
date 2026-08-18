@@ -3,7 +3,6 @@ name: competitive-intel
 description: "competitive, intel, competitors, analyze, research, extract, competitor"
 version: 0.3.0
 tools: Read, Write, Glob, Bash, WebSearch, WebFetch, sandbox_execute
-disable-model-invocation: true
 ---
 
 # Competitive Intelligence
