@@ -149,7 +149,7 @@ For each competitor, evaluate:
 Save all output files to:
 
 ```
-~/workshop/outputs/competitive-intel/{company-name}/
+${CLAUDE_OUTPUTS_DIR:-~/.claude/outputs}/competitive-intel/{company-name}/
 ```
 
 - Use a URL-safe, lowercase version of the company name for the directory (e.g., `acme-corp`, `stripe`, `notion`)
@@ -223,7 +223,7 @@ Each recommendation should include: the observation, why it matters, and a concr
 Batch operations benefit from `sandbox_execute`:
 
 - **Batch external data gathering**: Fetch competitor pages, review sites, and ad library data in a single sandbox execution — external HTTP now supported
-- **Cross-source aggregation**: Sandbox merges and cross-references results from `~/workshop/outputs/` for downstream analysis
+- **Cross-source aggregation**: Sandbox merges and cross-references results from the output directory for downstream analysis
 
 Principle: **Deterministic batch work → sandbox; reasoning/presentation → LLM.**
 
